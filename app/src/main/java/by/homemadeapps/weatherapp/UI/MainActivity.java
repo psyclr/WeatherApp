@@ -11,7 +11,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import by.homemadeapps.weatherapp.Controller.WeatherAPI;
+import by.homemadeapps.weatherapp.Controller.RestManager;
 import by.homemadeapps.weatherapp.Controller.helpers.WeatherService;
 import by.homemadeapps.weatherapp.DataModel.Entity.Main;
 import by.homemadeapps.weatherapp.DataModel.Entity.ResponseData;
@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.refresh_button)
     Button mRefreshButton;
 
-    private  WeatherService weatherService;
+    private WeatherService weatherService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,18 +66,27 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-          WeatherAPI.factory.getInstance().getWeather("Hrodna").enqueue(new Callback<ResponseData>() {
-            @Override
-            public void onResponse(Call<ResponseData> call, Response<ResponseData> response) {
-                Main m = response.body().getMain();
-                int hum = m.getHumidity();
+        try {
+            RestManager manager = new RestManager();
+            manager.getmWeatherService().getWeather("Hrodna").enqueue(new Callback<ResponseData>() {
+                @Override
+                public void onResponse(Call<ResponseData> call, Response<ResponseData> response) {
+                    ResponseData resp = response.body();
+                    if (resp != null) {
+                        Main main = response.body().getMain();
+                        int num = 0;
+                    }
+                }
 
-            }
+                @Override
+                public void onFailure(Call<ResponseData> call, Throwable t) {
+                    int num = 0;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            @Override
-            public void onFailure(Call<ResponseData> call, Throwable t) {
-            }
-        });
 
     }
 }

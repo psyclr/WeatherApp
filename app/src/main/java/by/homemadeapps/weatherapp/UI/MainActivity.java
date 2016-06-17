@@ -8,12 +8,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import by.homemadeapps.weatherapp.Controller.WeatherAPI;
 import by.homemadeapps.weatherapp.Controller.helpers.WeatherService;
-import by.homemadeapps.weatherapp.DataModel.Entity.Main;
 import by.homemadeapps.weatherapp.DataModel.Entity.ResponseData;
 import by.homemadeapps.weatherapp.R;
 import retrofit2.Call;
@@ -36,47 +37,63 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.refresh_button)
     Button mRefreshButton;
 
-    private  WeatherService weatherService;
+    private WeatherService weatherService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        weatherService = new WeatherService();
+         weatherService = new WeatherService();
+
     }
 
     @OnClick(R.id.refresh_button)
     void onClick() {
-        Log.d("working", "fine");
+        try {
+            Log.i("Кнопка","try");
 
-        /*try {
-            weatherService.getWeather("Hrodna", new Callback() {
+            weatherService.getWeather(mEnterCityName.getText().toString(), new Callback() {
+
                 @Override
                 public void onResponse(Call call, Response response) {
+                 //   Log.i("onResponse",response.errorBody().toString());
+
+
                     ResponseData responseData = (ResponseData)response.body();
-                    mHumidityView.setText(responseData.getMain().getHumidity());
+                    Log.i("Кнопка","onResponse");
+
+                    mHumidityView.setText(responseData.getMain().getHumidity()+"");
+                    mCityTextView.setText(responseData.getName());
+                    Date date = new Date();
+                    date.setTime(responseData.getDt());
+                    mCurrentDateView.setText(date.toString());
                 }
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-
+                   t.getCause();
+                    t.getMessage();
+                    t.getStackTrace();
+                    Log.d("Кнопка",t.getCause().toString());
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
-          WeatherAPI.factory.getInstance().getWeather("Hrodna").enqueue(new Callback<ResponseData>() {
+        }
+        /*WeatherAPI.factory.getInstance().getWeather("London", Constants.HTTP.API_KEY).enqueue(new Callback<ResponseData>() {
             @Override
             public void onResponse(Call<ResponseData> call, Response<ResponseData> response) {
-                Main m = response.body().getMain();
-                int hum = m.getHumidity();
-
+                Log.d("response", "message");
+                Log.d("response:", response.message());
+                List<Weather> weather = response.body().getWeather();
+                Log.d(weather.size() + "", "");
             }
 
             @Override
             public void onFailure(Call<ResponseData> call, Throwable t) {
             }
-        });
+        });*/
 
     }
 }

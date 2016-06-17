@@ -23,7 +23,7 @@ public class WeatherService {
 
 
     public void getWeather(String name, Callback callback) throws IOException {
-        service.getWeather(name).enqueue(callback);
+        service.getWeather(name,Constants.HTTP.API_KEY).enqueue(callback);
     }
 
 }
